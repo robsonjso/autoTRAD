@@ -1,34 +1,34 @@
 # AutoTrad 🌍
 
-**Runtime automatic translation for Android without `strings.xml`**
+**Tradução automática em runtime para Android sem `strings.xml`**
 
 [![Build Status](https://github.com/robsonjso/autotrad/workflows/CI/badge.svg)](https://github.com/robsonjso/autotrad/actions)
 [![JitPack](https://jitpack.io/v/robsonjso/autotrad.svg)](https://jitpack.io/#robsonjso/autotrad)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[🇺🇸 English](README_EN.md) | [🇪🇸 Español](README_ES.md) | [🇧🇷 Português](README.md)
+[🇺🇸 English](README_EN.md) | [🇪🇸 Español](README_ES.md) | 🇧🇷 Português
 
-AutoTrad is an Android library that enables **real-time automatic translation** without the need for `strings.xml` files. Use `AutoText("any text")` and the library automatically translates using ML Kit on-device.
+AutoTrad é uma biblioteca Android que permite **tradução automática em tempo real** sem necessidade de arquivos `strings.xml`. Use `AutoText("qualquer texto")` e a biblioteca traduz automaticamente usando ML Kit on-device.
 
-## ✨ Features
+## ✨ Características
 
-- 🚀 **Zero Setup** - Works out-of-the-box
-- 🤖 **ML Kit On-Device** - Offline translation after initial model download
-- 🎯 **Automatic Detection** - Identifies source language automatically
-- 📱 **Compose First** - Native integration with Jetpack Compose
-- 🔄 **Runtime Switching** - Real-time language switching
-- 🛡️ **Quality Gate** - Preserves placeholders and applies role-based limits
-- 📊 **Translation Memory** - Intelligent cache for performance
-- 🌍 **RTL Support** - Automatic support for RTL languages
-- ♿ **Accessibility** - Translation of contentDescription
-- 📈 **Telemetry** - Optional metrics without PII
-- 🛠️ **Dev Tools** - Overlay editor and pending export
+- 🚀 **Zero Setup** - Funciona out-of-the-box
+- 🤖 **ML Kit On-Device** - Tradução offline após download inicial
+- 🎯 **Detecção Automática** - Identifica idioma de origem automaticamente
+- 📱 **Compose First** - Integração nativa com Jetpack Compose
+- 🔄 **Runtime Switching** - Troca de idioma em tempo real
+- 🛡️ **Quality Gate** - Preserva placeholders e aplica limites por role
+- 📊 **Translation Memory** - Cache inteligente para performance
+- 🌍 **RTL Support** - Suporte automático a idiomas RTL
+- ♿ **Acessibilidade** - Tradução de contentDescription
+- 📈 **Telemetria** - Métricas opcionais sem PII
+- 🛠️ **Dev Tools** - Overlay de edição e export de pending
 
 ## 🚀 Quickstart
 
-### 1. Dependencies
+### 1. Dependências
 
-#### settings.gradle.kts (in consumer project)
+#### settings.gradle.kts (no projeto consumidor)
 ```kotlin
 dependencyResolutionManagement {
     repositories {
@@ -47,18 +47,18 @@ dependencies {
 }
 ```
 
-### ProGuard / R8 (optional)
-If you obfuscate your app, include:
+### ProGuard / R8 (opcional)
+Se você ofusca seu app, inclua:
 ```pro
 -keep class io.autotrad.** { *; }
 -keep class com.google.mlkit.** { *; }
 -dontwarn com.google.mlkit.**
 ```
 
-### 2. Initialization
+### 2. Inicialização
 
 ```kotlin
-// Application or MainActivity
+// Application ou MainActivity
 AutoTrad.init(
     context = this,
     translators = listOf(
@@ -72,52 +72,52 @@ AutoTrad.init(
 )
 ```
 
-### 3. Usage in UI
+### 3. Uso na UI
 
 ```kotlin
 @Composable
 fun MyScreen() {
     Column {
-        // Automatic translation
-        AutoText("Hello, world!") // → "Hola, mundo!" (in Spanish)
+        // Tradução automática
+        AutoText("Olá, mundo!") // → "Hello, world!"
         
-        // With placeholders
-        AutoText("Welcome, {name}!", args = mapOf("name" to "John"))
+        // Com placeholders
+        AutoText("Bem-vindo, {name}!", args = mapOf("name" to "João"))
         
-        // With role (character limit)
+        // Com role (limite de caracteres)
         Button(onClick = {}) {
-            AutoText("Continue", role = TextRole.Button) // max 16 chars
+            AutoText("Continuar", role = TextRole.Button) // máx 16 chars
         }
         
-        // Language selector
-        Button(onClick = { AutoTrad.setLocale("es") }) {
-            AutoText("Spanish")
+        // Seletor de idioma
+        Button(onClick = { AutoTrad.setLocale("en") }) {
+            AutoText("English")
         }
     }
 }
 ```
 
-## 📚 Complete Guide
+## 📚 Guia Completo
 
-### 🔧 Advanced Configuration
+### 🔧 Configuração Avançada
 
-#### LocaleManager with Persistence
+#### LocaleManager com Persistência
 
 ```kotlin
 val localeManager = LocaleManager(
     context = this,
     policy = LocalePolicy(
-        mode = LocaleMode.HYBRID, // follows system until user chooses
+        mode = LocaleMode.HYBRID, // segue sistema até usuário escolher
         supported = listOf("en", "es", "pt-BR"),
         fallbackChain = listOf("en")
     )
 )
 
-// Automatic persistence
-localeManager.setUserLanguage("en") // saves to DataStore
+// Persistência automática
+localeManager.setUserLanguage("en") // salva no DataStore
 ```
 
-#### Glossary and Do-Not-Translate
+#### Glossário e Do-Not-Translate
 
 ```kotlin
 GlossaryTranslator(
@@ -130,65 +130,65 @@ GlossaryTranslator(
 )
 ```
 
-#### Pre-warming for Performance
+#### Pré-aquecimento para Performance
 
 ```kotlin
 lifecycleScope.launch {
-    // Download ML Kit models
+    // Baixa modelos ML Kit
     MlKitTranslator().preDownloadLanguages(
         Locale("pt", "BR"), 
         Locale.ENGLISH, 
         Locale("es")
     )
     
-    // Pre-translate critical texts
+    // Pré-traduz textos críticos
     AutoTradPrewarm.prewarmCriticalUI(Locale.ENGLISH)
 }
 ```
 
 ### 🎨 UI Components
 
-#### AutoTradLayout (Automatic RTL)
+#### AutoTradLayout (RTL Automático)
 
 ```kotlin
-AutoTradLayout { // applies LayoutDirection.Rtl for Arabic, Hebrew, etc.
+AutoTradLayout { // aplica LayoutDirection.Rtl para árabe, hebraico, etc.
     DemoScreen()
 }
 ```
 
-#### Accessibility
+#### Acessibilidade
 
 ```kotlin
 Button(
-    modifier = Modifier.autoContentDescription("Example button")
+    modifier = Modifier.autoContentDescription("Botão de exemplo")
 ) {
-    AutoText("A11y Example", role = TextRole.Button)
+    AutoText("Exemplo A11y", role = TextRole.Button)
 }
 ```
 
 ### 🛡️ Quality Gate
 
-#### TextRole for Character Limits
+#### TextRole para Limites de Caracteres
 
 ```kotlin
 enum class TextRole {
-    Button,    // max 16 chars
-    Chip,      // max 12 chars
-    Title,     // max 48 chars
-    Caption,   // max 24 chars
-    Error      // max 32 chars
+    Button,    // máx 16 chars
+    Chip,      // máx 12 chars
+    Title,     // máx 48 chars
+    Caption,   // máx 24 chars
+    Error      // máx 32 chars
 }
 ```
 
-#### Automatic Blacklist
+#### Blacklist Automática
 
-QualityGate automatically blocks translation of:
+A QualityGate bloqueia automaticamente tradução de:
 - 📧 **Emails** - `user@example.com`
-- 🔢 **Codes** - `ABC123`, `ID456`
-- 🔢 **Long numbers** - `1234567890`
+- 🔢 **Códigos** - `ABC123`, `ID456`
+- 🔢 **Números longos** - `1234567890`
 - 📝 **Placeholders** - `{name}`, `{count}`
 
-### 📊 Telemetry
+### 📊 Telemetria
 
 ```kotlin
 AutoTradTelemetry.register(object : TelemetrySink {
@@ -203,7 +203,7 @@ AutoTradTelemetry.register(object : TelemetrySink {
     }
 })
 
-// Real-time metrics
+// Métricas em tempo real
 val metrics = AutoTradTelemetry.snapshot()
 ```
 
@@ -211,96 +211,96 @@ val metrics = AutoTradTelemetry.snapshot()
 
 #### Dev Overlay (Debug)
 
-Long-press any `AutoText` to edit translations in real-time.
+Long-press em qualquer `AutoText` para editar traduções em tempo real.
 
-#### Pending Export
+#### Export de Pending
 
 ```kotlin
 @Composable
 fun ExportPendingButton() {
     Button(onClick = {
         val zip = AutoTradPending.zipPending(context)
-        // Opens share sheet (email, Drive, etc.)
+        // Abre share sheet (e-mail, Drive, etc.)
     }) {
-        AutoText("Export pending", role = TextRole.Button)
+        AutoText("Exportar pending", role = TextRole.Button)
     }
 }
 ```
 
-#### Gradle Task for Merge
+#### Gradle Task para Merge
 
 ```bash
 ./gradlew :app:mergeAutoTradPending
 ```
 
-Merges `pending/autotrad.pending.*.json` files into `src/main/assets/autotrad/`.
+Mergeia arquivos `pending/autotrad.pending.*.json` em `src/main/assets/autotrad/`.
 
-### 📁 Assets (Optional)
+### 📁 Assets (Opcional)
 
-Create JSON files in `src/main/assets/autotrad/`:
+Crie arquivos JSON em `src/main/assets/autotrad/`:
 
 ```json
 // autotrad.en.json
 {
-  "Enter": "Enter",
-  "Exit": "Exit",
-  "Welcome, {name}!": "Welcome, {name}!"
+  "Entrar": "Enter",
+  "Sair": "Exit",
+  "Bem-vindo, {name}!": "Welcome, {name}!"
 }
 ```
 
-## 🏗️ Architecture
+## 🏗️ Arquitetura
 
-### Modules
+### Módulos
 
-- **`autotrad-core`** - Main engine, ML Kit, Quality Gate
-- **`autotrad-compose`** - UI components for Compose
-- **`autotrad-sample`** - Complete demonstration app
+- **`autotrad-core`** - Engine principal, ML Kit, Quality Gate
+- **`autotrad-compose`** - Componentes UI para Compose
+- **`autotrad-sample`** - App de demonstração completo
 
-### Translation Flow
+### Fluxo de Tradução
 
 ```
-1. AutoText("new text")
+1. AutoText("novo texto")
 2. Translation Memory (cache)
-3. Assets JSON (if available)
-4. Glossary (fixed terms)
+3. Assets JSON (se disponível)
+4. Glossary (termos fixos)
 5. ML Kit Language Detection
 6. ML Kit Translation
 7. Quality Gate validation
-8. Saves to TM + pending.json
-9. Displays translation
+8. Salva em TM + pending.json
+9. Exibe tradução
 ```
 
-### Translation Providers
+### Provedores de Tradução
 
 - **`MlKitTranslator`** - Google ML Kit on-device
-- **`DetectingTranslator`** - Automatic detection + delegate
-- **`GlossaryTranslator`** - Glossary + do-not-translate
-- **`EchoTranslator`** - For testing (returns original)
+- **`DetectingTranslator`** - Detecção automática + delegate
+- **`GlossaryTranslator`** - Glossário + do-not-translate
+- **`EchoTranslator`** - Para testes (retorna original)
 
 ## 📱 Sample App
 
-The demonstration app includes:
+O app de demonstração inclui:
 
-- ✅ Real-time automatic translation
-- ✅ Language selector with persistence
-- ✅ Placeholder examples
-- ✅ Quality Gate by role
-- ✅ Automatic RTL
-- ✅ Accessibility
+- ✅ Tradução automática em tempo real
+- ✅ Seletor de idiomas com persistência
+- ✅ Exemplos de placeholders
+- ✅ Quality Gate por role
+- ✅ RTL automático
+- ✅ Acessibilidade
 - ✅ Dev Overlay
-- ✅ Pending export
-- ✅ Telemetry
+- ✅ Export de pending
+- ✅ Telemetria
 
-## 🔧 Advanced Configuration
+## 🔧 Configuração Avançada
 
 ### LocalePolicy Modes
 
 ```kotlin
 enum class LocaleMode {
-    FOLLOW_SYSTEM,     // Always follows system
-    USER_SELECTED,     // Always uses user selection
-    AUTO_BY_LOCATION,  // Based on geolocation
-    HYBRID            // Follows system until user chooses
+    FOLLOW_SYSTEM,     // Sempre segue sistema
+    USER_SELECTED,     // Sempre usa seleção do usuário
+    AUTO_BY_LOCATION,  // Baseado em geolocalização
+    HYBRID            // Segue sistema até usuário escolher
 }
 ```
 
@@ -313,7 +313,7 @@ class CustomTranslator : Translator {
         src: Locale?, 
         tgt: Locale
     ): String? {
-        // Your translation logic
+        // Sua lógica de tradução
         return translatedText
     }
 }
@@ -321,50 +321,50 @@ class CustomTranslator : Translator {
 
 ## 🚀 Performance
 
-### Included Optimizations
+### Otimizações Incluídas
 
-- **Translation Memory** - In-memory cache
-- **Pre-warming** - Anticipated model download
-- **Lazy Loading** - ML Kit models on demand
-- **Quality Gate** - Avoids unnecessary translations
-- **RTL Detection** - Optimized for RTL languages
+- **Translation Memory** - Cache em memória
+- **Pré-aquecimento** - Download de modelos antecipado
+- **Lazy Loading** - Modelos ML Kit sob demanda
+- **Quality Gate** - Evita traduções desnecessárias
+- **RTL Detection** - Otimizado para idiomas RTL
 
-### Benchmarks (typical values)
+### Benchmarks (valores típicos)
 
-- **First translation**: 300–800 ms (includes model download, cached afterwards)
-- **Subsequent translations**: ~30–80 ms (cache + on-device)
-- **TM hits** (memory): ~1–5 ms
-- **APK size**: no relevant impact from models
-- **Device storage**: +~20–40 MB per downloaded language (once)
+- **Primeira tradução**: 300–800 ms (inclui download do modelo, cacheado depois)
+- **Traduções subsequentes**: ~30–80 ms (cache + on-device)
+- **TM hits** (memória): ~1–5 ms
+- **Tamanho do APK**: sem impacto relevante pelos modelos
+- **Armazenamento no dispositivo**: +~20–40 MB por idioma baixado (uma vez)
 
-## ✅ Compatibility
+## ✅ Compatibilidade
 - **Android**: minSdk 21+
 - **Compose**: 1.6.x+
-- **Kotlin**: 1.9+ (tested with plugin 2.0.x)
-- **ML Kit Translate**: models downloaded on-demand
-- **Architecture**: works with standard MVVM/Compose
+- **Kotlin**: 1.9+ (testado com plugin 2.0.x)
+- **ML Kit Translate**: modelos baixados on-demand
+- **Arquitetura**: funciona com MVVM/Compose padrão
 
-## ⚠️ Known Limitations
-- **Business terms**: MT may vary ("Sign in" vs "Enter"). Use **GlossaryTranslator** or JSON packs.
-- **Complex plurals**: Advanced ICU (plural/gender) is on the roadmap.
-- **Rare/RTL languages**: test visuals; use `AutoTradLayout` for direction.
-- **First use**: may download models; use **pre-warming** to avoid initial lag.
+## ⚠️ Limitações conhecidas
+- **Termos de negócio**: MT pode variar ("Sign in" vs "Enter"). Use **GlossaryTranslator** ou packs JSON.
+- **Plurais complexos**: ICU avançado (plural/gênero) está no roadmap.
+- **Idiomas raros/RTL**: teste visuais; use `AutoTradLayout` para direction.
+- **Primeiro uso**: pode baixar modelos; use **pré-aquecimento** para evitar lag inicial.
 
 ## 🧰 Troubleshooting
-- **Nothing translates**: are you using `EchoTranslator`? Switch to `DetectingTranslator + MlKitTranslator`.
-- **Slow first time**: do `preDownloadLanguages(...)` on boot and `prewarm(...)` critical texts.
-- **Translation broke layout**: mark `role = TextRole.Button/Chip` to apply Quality Gate limits.
-- **Wrong translation**: edit via **Dev Overlay** (long-press) or fix in JSON pack/glossary.
-- **No internet on first use**: ensure language model was downloaded before (or enable `requireWifiForDownload=false`).
+- **Nada traduz**: você está usando `EchoTranslator`? Troque por `DetectingTranslator + MlKitTranslator`.
+- **Demora na 1ª vez**: faça `preDownloadLanguages(...)` no boot e `prewarm(...)` dos textos críticos.
+- **Tradução quebrou o layout**: marque `role = TextRole.Button/Chip` para aplicar limites no Quality Gate.
+- **Tradução errada**: edite via **Dev Overlay** (long-press) ou fixe no pack JSON/glossário.
+- **Sem internet no 1º uso**: garanta que o modelo do idioma foi baixado antes (ou habilite `requireWifiForDownload=false`).
 
-## 🔒 Security
+## 🔒 Segurança
 
-- ✅ **On-Device** - No data sent to external servers
-- ✅ **No PII** - Telemetry doesn't collect personal data
-- ✅ **Sandbox** - Pending files isolated in app
-- ✅ **FileProvider** - Secure sharing
+- ✅ **On-Device** - Nenhum dado enviado para servidores
+- ✅ **Sem PII** - Telemetria não coleta dados pessoais
+- ✅ **Sandbox** - Arquivos pending isolados no app
+- ✅ **FileProvider** - Compartilhamento seguro
 
-## 📄 License
+## 📄 Licença
 
 ```
 Copyright 2025 Robson Josue (robsonjso)
@@ -382,15 +382,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## 🤝 Contributing
+## 🤝 Contribuindo
 
-1. Fork the project
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-### Local Development
+### Desenvolvimento Local
 
 ```bash
 git clone https://github.com/robsonjso/autotrad.git
@@ -398,15 +398,15 @@ cd autotrad
 ./gradlew build
 ```
 
-## 📞 Support
+## 📞 Suporte
 
 - 📧 **Issues**: [GitHub Issues](https://github.com/robsonjso/autotrad/issues)
-- 📖 **Documentation**: [Wiki](https://github.com/robsonjso/autotrad/wiki)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/robsonjso/autotrad/discussions)
+- 📖 **Documentação**: [Wiki](https://github.com/robsonjso/autotrad/wiki)
+- 💬 **Discussões**: [GitHub Discussions](https://github.com/robsonjso/autotrad/discussions)
 
 ## 🎯 Roadmap
 
-### v0.2.0 (Next)
+### v0.2.0 (Próximo)
 - [ ] iOS Support (SwiftUI)
 - [ ] Web Support (Compose for Web)
 - [ ] DeepL Integration
@@ -414,7 +414,7 @@ cd autotrad
 - [ ] Batch Translation
 - [ ] Translation Analytics
 
-### v1.0.0 (Future)
+### v1.0.0 (Futuro)
 - [ ] Enterprise Features
 - [ ] Team Collaboration
 - [ ] Translation Memory Sync
@@ -423,6 +423,6 @@ cd autotrad
 
 ---
 
-**AutoTrad** - Revolutionizing Android internationalization! 🌍✨
+**AutoTrad** - Revolucionando a internacionalização Android! 🌍✨
 
-*Developed with ❤️ by the AutoTrad community*
+*Desenvolvido com ❤️ pela comunidade AutoTrad*
