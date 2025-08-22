@@ -1,0 +1,33 @@
+name: Release AARs/APK
+on:
+  release:
+    types: [published]
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build libs & sample
+        run: |
+          ./gradlew :packages:autotrad-core:assembleRelease \
+                     :packages:autotrad-compose:assembleRelease \
+                     :samples:autotrad-sample:assembleDebug
+      - name: Generate checksums
+        run: |
+          set -e
+          echo "SHA256 checksums" > SHA256SUMS.txt
+          sha256sum packages/autotrad-core/build/outputs/aar/*.aar >> SHA256SUMS.txt
+          sha256sum packages/autotrad-compose/build/outputs/aar/*.aar >> SHA256SUMS.txt
+          sha256sum samples/autotrad-sample/build/outputs/apk/debug/*.apk >> SHA256SUMS.txt
+      - name: Upload AARs/APK + checksums
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            packages/autotrad-core/build/outputs/aar/*.aar
+            packages/autotrad-compose/build/outputs/aar/*.aar
+            samples/autotrad-sample/build/outputs/apk/debug/*.apk
+            SHA256SUMS.txt
